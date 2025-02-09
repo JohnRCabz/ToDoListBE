@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ToDo;
 
-class ToDoController extends Controller
+class ToDoController
 {
     public function index()
     {
@@ -18,7 +18,7 @@ class ToDoController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'targetdate' => 'nullable|date',
-            'status' => 'required|string|in:pending,completed',
+            'status' => 'required|string|in:Pending,In Progress',
         ]);
 
         $todo = ToDo::create($validatedData);
@@ -36,7 +36,7 @@ class ToDoController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'targetdate' => 'nullable|date',
-            'status' => 'required|string|in:pending,completed',
+            'status' => 'required|string|in:Pending,In Progress,Finished',
         ]);
 
         $todo = ToDo::findOrFail($id);
