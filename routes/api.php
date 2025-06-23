@@ -1,11 +1,30 @@
 <?php
 
+use App\Http\Controllers\Task\TaskController;
+use App\Http\Controllers\Task\UserTaskController;
+use App\Http\Controllers\User\LoginController;
+use App\Http\Controllers\User\RegisterController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ToDoController;
 
-// ToDo List API Routes
-Route::get('/tasks', [ToDoController::class, 'index']);
-Route::post('/tasks', [ToDoController::class, 'store']);
-Route::get('/tasks/{id}', [ToDoController::class, 'show']);
-Route::put('/tasks/{id}', [ToDoController::class, 'update']);
-Route::delete('/tasks/{id}', [ToDoController::class, 'destroy']);
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/register', [RegisterController::class, 'register']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [LoginController::class, 'logout']);
+
+    Route::prefix('user')->group(function(){
+        Route::get('/profile', [UserController::class, 'profile']);
+        Route::put('/{email}', [UserController::class, 'update']);
+        Route::post('/change-password', [UserController::class, 'changePassword']);
+
+        Route::get('/statistics', [UserTaskController::class, 'statistics']);
+    });
+
+    Route::middleware('is_admin')->prefix('user')->group(function () {
+        Route::get('/all', [UserController::class, 'index']);
+        Route::get('/{email}', [UserController::class, 'show']);
+    });
+
+     Route::apiResource('/tasks', TaskController::class);
+});
